@@ -23,3 +23,15 @@ Avoid the nasty habit of defining the entire Express app in a single huge file -
  - (b) secrets are kept outside committed code
  - (c) config is hierarchical for easier findability.
  There are a few packages that can help tick most of those boxes like rc, nconf, config, and convict.
+ A reliable config solution must combine both configuration files + overrides from the process variables.
+ 
+## 2. Error Handling Practices
+ 
+### 2.1 Use Async-Await or promises for async error handling
+Handling async errors in callback style is probably the fastest way to hell (a.k.a the pyramid of doom). The best gift you can give to your code is using a reputable promise library or async-await instead which enables a much more compact and familiar code syntax like try-catch.
+
+### 2.2 Use only the built-in Error object
+Whether you reject a promise, throw an exception or emit an error – using only the built-in Error object (or an object that extends the built-in Error object) will increase uniformity and prevent loss of information.
+
+When raising the exception, it’s usually a good practice to fill it with additional contextual properties like the error name and the associated HTTP error code. To achieve this uniformity and practices, consider extending the Error object with additional properties, but be careful not to overdo it. It's generally a good idea to extend the built-in Error object only once with an AppError for all the application level errors, and pass any data you need to differentiate between different kinds of errors as arguments.
+
