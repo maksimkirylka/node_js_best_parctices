@@ -35,12 +35,12 @@ Whether you reject a promise, throw an exception or emit an error – using only
 
 When raising the exception, it’s usually a good practice to fill it with additional contextual properties like the error name and the associated HTTP error code. To achieve this uniformity and practices, consider extending the Error object with additional properties, but be careful not to overdo it. It's generally a good idea to extend the built-in Error object only once with an AppError for all the application level errors, and pass any data you need to differentiate between different kinds of errors as arguments.
 
-### 2.3 Distinguish operational vs programmer errors (Action Item)
+### 2.3 Distinguish operational vs programmer errors (Action Item!!!)
 Distinguishing the following two error types will minimize your app downtime and helps avoid crazy bugs: Operational errors refer to situations where you understand what happened and the impact of it – for example, a query to some HTTP service failed due to connection problem. On the other hand, programmer errors refer to cases where you have no idea why and sometimes where an error came from – it might be some code that tried to read an undefined value or DB connection pool that leaks memory. Operational errors are relatively easy to handle – usually logging the error is enough. Things become hairy when a programmer error pops up, the application might be in an inconsistent state and there’s nothing better you can do than to restart gracefully. 
 
 Unless you really know what you are doing, you should perform a graceful restart of your service after receiving an “uncaughtException” exception event. Otherwise, you risk the state of your application, or that of 3rd party libraries to become inconsistent, leading to all kinds of crazy bugs.
 
-### 2.4 Handle errors centrally, not within a middleware (Action Item)
+### 2.4 Handle errors centrally, not within a middleware (Action Item!!!)
 Without one dedicated object for error handling, greater are the chances for inconsistent errors handling: Errors thrown within web requests might get handled differently from those raised during the startup phase and those raised by scheduled jobs. This might lead to some types of errors that are being mismanaged. This single error handler object is responsible for making the error visible, for example, by writing to a well-formatted logger, firing metrics using some monitoring product (like Prometheus, CloudWatch, DataDog, and Sentry) and to decide whether the process should crash. Most web frameworks provide an error catching middleware mechanism - A typical mistake is to place the error handling code within this middleware. By doing so, you won't be able to reuse the same handler for errors that are caught in different scenarios like scheduled jobs, message queue subscribers, and uncaught exceptions. Consequently, the error middleware should only catch errors and forward them to the handler.
 
 ### 2.5 Document API errors using Swagger or GraphQL
@@ -61,7 +61,7 @@ Whether professional automated QA or plain manual developer testing – Ensure t
 ### 2.9 Discover errors and downtime using APM products
 Monitoring and performance products (a.k.a APM) proactively gauge your codebase or API so they can automagically highlight errors, crashes, and slow parts that you were missing
 
-### 2.10 Catch unhandled promise rejections (Action Item)
+### 2.10 Catch unhandled promise rejections (Action Item!!!)
 Any exception thrown within a promise will get swallowed and discarded unless a developer didn’t forget to explicitly handle it. Even if your code is subscribed to process.uncaughtException! Overcome this by registering to the event `process.unhandledRejection` - this will ensure that any promise error, if not handled locally, will get its treatment:
 ```
 process.on('unhandledRejection', (reason: string, p: Promise<any>) => {
@@ -83,7 +83,7 @@ process.on('uncaughtException', (error: Error) => {
 Assert API input to avoid nasty bugs that are much harder to track later.
 We all know how checking arguments and failing fast is important to avoid hidden bugs (see anti-pattern code example below). If not, read about explicit programming and defensive programming
 
-### 2.12 Always await promises before returning to avoid a partial stacktrace (Action Item)
+### 2.12 Always await promises before returning to avoid a partial stacktrace (Action Item!!!)
 Always do return await when returning a promise to benefit full error stacktrace. If a function returns a promise, that function must be declared as async function and explicitly await the promise before returning it.
 
 ```
@@ -112,3 +112,27 @@ Error: with all frames present
 ```
 Because only async functions may await, sync function would always be missed in async stacktrace if any async operation has been performed after the function has been called.
 This is why resolving promises before returning them is the best practice for Node.js and not for the EcmaScript in general.
+
+## 3. Code Style Practices
+
+### 3.1 Use ESLint
+ESLint is the de-facto standard for checking possible code errors and fixing code style, not only to identify nitty-gritty spacing issues but also to detect serious code anti-patterns like developers throwing errors without classification. Though ESLint can automatically fix code styles, other tools like prettier and beautify are more powerful in formatting the fix and work in conjunction with ESLint.
+
+### 3.2 Node.js specific plugins
+TL;DR: On top of ESLint standard rules that cover vanilla JavaScript, add Node.js specific plugins like eslint-plugin-node, eslint-plugin-mocha and eslint-plugin-node-security
+
+### 3.3 Start a Codeblock's Curly Braces on the Same Line
+The opening curly braces of a code block should be on the same line as the opening statement:
+```
+// Do
+function someFunction() {
+  // code block
+}
+```
+That's one of the pitfalls of JavaScript: automatic semicolon insertion. Lines that do not end with a semicolon, but could be the end of a statement, are automatically terminated.
+
+### 3.4 Separate your statements properly
+Use ESLint to gain awareness about separation concerns. Prettier or Standardjs can automatically resolve these issues.
+You can use assignments and avoid using immediately invoked function expressions to prevent most of the unexpected errors.
+
+### 3.5 Name your functions
