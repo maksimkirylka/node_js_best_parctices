@@ -193,3 +193,25 @@ Though it's recommended to use async-await and avoid function parameters when de
 ## 4. Testing And Overall Quality Practices
 
 ### 4.1 At the very least, write API (component) testing
+Most projects just don't have any automated testing due to short timetables or often the 'testing project' ran out of control and was abandoned. For that reason, prioritize and start with API testing which is the easiest way to write and provides more coverage than unit testing (you may even craft API tests without code using tools like Postman). Afterwards, should you have more resources and time, continue with advanced test types like unit testing, DB testing, performance testing, etc.
+
+### 4.2 Include 3 parts in each test name (Action Item!!!)
+Make the test speak at the requirements level so it's self-explanatory also to QA engineers and developers who are not familiar with the code internals. State in the test name what is being tested (unit under test), under what circumstances, and what is the expected result.
+
+1. What is being tested? For example, the ProductsService.addNewProduct method
+2. Under what circumstances and scenario? For example, no price is passed to the method
+3. What is the expected result? For example, the new product is not approved
+
+```
+//1. unit under test
+describe('Products Service', () => {
+  describe('Add new product', () => {
+    //2. scenario and 3. expectation
+    it('should have pending approval status when no price is specified, ', () => {
+      const newProduct = new ProductService().add(...);
+      expect(newProduct.status).to.equal('pendingApproval');
+    });
+  });
+});
+```
+
