@@ -136,3 +136,60 @@ Use ESLint to gain awareness about separation concerns. Prettier or Standardjs c
 You can use assignments and avoid using immediately invoked function expressions to prevent most of the unexpected errors.
 
 ### 3.5 Name your functions
+Name all functions, including closures and callbacks. Avoid anonymous functions. This is especially useful when profiling a node app. Naming all functions will allow you to easily understand what you're looking at when checking a memory snapshot.
+
+### 3.6 Use naming conventions for variables, constants, functions and classes
+Use lowerCamelCase when naming constants, variables and functions, UpperCamelCase (capital first letter as well) when naming classes and UPPER_SNAKE_CASE when naming global or static variables. This will help you to easily distinguish between plain variables, functions, classes that require instantiation and variables declared at global module scope. Use descriptive names, but try to keep them short
+
+```
+// for global variables names we use the const/let keyword and UPPER_SNAKE_CASE
+let MUTABLE_GLOBAL = "mutable value"
+const GLOBAL_CONSTANT = "immutable value";
+const CONFIG = {
+  key: "value",
+};
+
+// examples of UPPER_SNAKE_CASE convention in nodejs/javascript ecosystem
+// in javascript Math.PI module
+const PI = 3.141592653589793;
+
+// https://github.com/nodejs/node/blob/b9f36062d7b5c5039498e98d2f2c180dca2a7065/lib/internal/http2/core.js#L303
+// in nodejs http2 module
+const HTTP_STATUS_OK = 200;
+const HTTP_STATUS_CREATED = 201;
+
+// for class name we use UpperCamelCase
+class SomeClassExample {
+  // for static class properties we use UPPER_SNAKE_CASE
+  static STATIC_PROPERTY = "value";
+}
+
+// for functions names we use lowerCamelCase
+function doSomething() {
+  // for scoped variable names we use the const/let keyword and lowerCamelCase
+  const someConstExample = "immutable value";
+  let someMutableExample = "mutable value";
+}
+```
+
+### 3.7 Prefer const over let. Ditch the var
+Using const means that once a variable is assigned, it cannot be reassigned. Preferring const will help you to not be tempted to use the same variable for different uses, and make your code clearer. If a variable needs to be reassigned, in a for loop, for example, use let to declare it. Another important aspect of let is that a variable declared using it is only available in the block scope in which it was defined. var is function scoped, not block-scoped, and shouldn't be used in ES6 now that you have const and let at your disposal.
+
+### 3.8 Require modules first, not inside functions
+Require modules at the beginning of each file, before and outside of any functions. This simple best practice will not only help you easily and quickly tell the dependencies of a file right at the top but also avoids a couple of potential problems.
+
+### 3.9 Require modules by folders, as opposed to the files directly
+When developing a module/library in a folder, place an index.js file that exposes the module's internals so every consumer will pass through it. This serves as an 'interface' to your module and eases future changes without breaking the contract.
+
+### 3.10 Use the === operator
+Prefer the strict equality operator === over the weaker abstract equality operator ==. == will compare two variables after converting them to a common type. There is no type conversion in ===, and both variables must be of the same type to be equal.
+
+### 3.11 Use Async Await, avoid callbacks
+Node 8 LTS now has full support for Async-await. This is a new way of dealing with asynchronous code which supersedes callbacks and promises. Async-await is non-blocking, and it makes asynchronous code look synchronous. The best gift you can give to your code is using async-await which provides a much more compact and familiar code syntax like try-catch
+
+### 3.12 Use arrow function expressions (=>)
+Though it's recommended to use async-await and avoid function parameters when dealing with older APIs that accept promises or callbacks - arrow functions make the code structure more compact and keep the lexical context of the root function (i.e. this).
+
+## 4. Testing And Overall Quality Practices
+
+### 4.1 At the very least, write API (component) testing
