@@ -198,7 +198,7 @@ Most projects just don't have any automated testing due to short timetables or o
 ### 4.2 Include 3 parts in each test name (Action Item!!!)
 Make the test speak at the requirements level so it's self-explanatory also to QA engineers and developers who are not familiar with the code internals. State in the test name what is being tested (unit under test), under what circumstances, and what is the expected result.
 
-1. What is being tested? For example, the ProductsService.addNewProduct method
+1. What is being tested? For example, the `ProductsService.addNewProduct` method
 2. Under what circumstances and scenario? For example, no price is passed to the method
 3. What is the expected result? For example, the new product is not approved
 
