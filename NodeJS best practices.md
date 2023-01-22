@@ -215,3 +215,8 @@ describe('Products Service', () => {
 });
 ```
 
+### 4.3 Structure tests by the AAA pattern (Action Item => verify on this)
+Structure your tests with 3 well-separated sections: Arrange, Act & Assert (AAA). The first part includes the test setup, then the execution of the unit under test, and finally the assertion phase. Following this structure guarantees that the reader spends no brain CPU on understanding the test plan.
+
+### 4.4 Detect code issues with a linter
+Use a code linter to check the basic quality and detect anti-patterns early. Run it before any test and add it as a pre-commit git-hook to minimize the time needed to review and correct any issue. Otherwise you may let pass some anti-pattern and possible vulnerable code to your production environment.
