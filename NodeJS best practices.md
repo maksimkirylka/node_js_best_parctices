@@ -257,3 +257,31 @@ Otherwise: Choosing some niche vendor might get you blocked once you need some a
 When a middleware holds some immense logic that spans many requests, it is worth testing it in isolation without waking up the entire web framework. This can be easily achieved by stubbing and spying on the {req, res, next} objects.
 Otherwise: A bug in Express middleware === a bug in all or most requests.
 
+## 5. Going To Production Practices
+
+### 5.1. Monitoring
+Monitoring is a game of finding out issues before customers do – obviously this should be assigned unprecedented importance. The market is overwhelmed with offers thus consider starting with defining the basic metrics you must follow (my suggestions inside), then go over additional fancy features and choose the solution that ticks all boxes. Click ‘The Gist’ below for an overview of the solutions.
+Otherwise: Failure === disappointed customers. Simple
+
+At the very basic level, monitoring means you can easily identify when bad things happen at production. For example, by getting notified by email or Slack. The challenge is to choose the right set of tools that will satisfy your requirements without breaking your bank. May I suggest, start with defining the core set of metrics that must be watched to ensure a healthy state – CPU, server RAM, Node process RAM (less than 1.4GB), the number of errors in the last minute, number of process restarts, average response time. Then go over some advanced features you might fancy and add to your wish list. Some examples of a luxury monitoring feature: DB profiling, cross-service measuring (i.e. measure business transaction), front-end integration, expose raw data to custom BI clients, Slack notifications and many others.
+
+We recommend you to watch these signals for all of your services: Error Rate: Because errors are user facing and immediately affect your customers. Response time: Because the latency directly affects your customers and business. Throughput: The traffic helps you to understand the context of increased error rates and the latency too. Saturation: It tells how “full” your service is. If the CPU usage is 90%, can your system handle more traffic?
+
+### 5.2. Increase transparency using smart logging
+Logs can be a dumb warehouse of debug statements or the enabler of a beautiful dashboard that tells the story of your app. Plan your logging platform from day 1: how logs are collected, stored and analyzed to ensure that the desired information (e.g. error rate, following an entire transaction through services and servers, etc) can really be extracted
+
+Otherwise: You end up with a black box that is hard to reason about, then you start re-writing all logging statements to add additional information
+
+- Timestamp each log line. This one is pretty self-explanatory – you should be able to tell when each log entry occurred.
+- Logging format should be easily digestible by humans as well as machines.
+- Allows for multiple configurable destination streams. For example, you might be writing trace logs to one file but when an error is encountered, write to the same file, then into error file and send an email at the same time…
+
+### 5.3. Delegate anything possible (e.g. gzip, SSL) to a reverse proxy
+Node is awfully bad at doing CPU intensive tasks like gzipping, SSL termination, etc. You should use ‘real’ middleware services like nginx, HAproxy or cloud vendor services instead.
+
+Otherwise: Your poor single thread will stay busy doing infrastructural tasks instead of dealing with your application core and performance will degrade accordingly.
+
+Although express.js has built-in static file handling through some connect middleware, you should never use it. Nginx can do a much better job of handling static files and can prevent requests for non-dynamic content from clogging our node processes…
+
+### 5.4. Lock dependencies
+
